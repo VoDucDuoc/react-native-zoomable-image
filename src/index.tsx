@@ -1,4 +1,4 @@
-import {
+import React, {
   forwardRef,
   memo,
   useCallback,
@@ -405,15 +405,20 @@ function GalleryInner<T = ImageSourcePropType>(
     transform: [{ translateY: translateY.value + layoutTranslateY.value }],
   }));
 
-  const backdropAnimated = useAnimatedStyle(() => ({
-    backgroundColor: backdropColor,
-    opacity: interpolate(
-      layoutTranslateY.value,
-      [-VERTICAL_ACTIVATION_THRESHOLD, 0, VERTICAL_ACTIVATION_THRESHOLD],
-      [0.9, 1, 0.9],
+  /** Use combined Y so opacity does not snap when pan-close merges layoutTranslateY into translateY. */
+  const backdropAnimated = useAnimatedStyle(() => {
+    const totalY = translateY.value + layoutTranslateY.value;
+    const opacity = interpolate(
+      totalY,
+      [0, SCREEN_HEIGHT],
+      [1, 0],
       'clamp'
-    ),
-  }));
+    );
+    return {
+      backgroundColor: backdropColor,
+      opacity,
+    };
+  });
 
   const hideHeaderAnimated = useAnimatedStyle(() => ({
     transform: [
@@ -431,9 +436,10 @@ function GalleryInner<T = ImageSourcePropType>(
       },
     ],
     opacity: interpolate(
-      layoutTranslateY.value,
+      translateY.value + layoutTranslateY.value,
       [-VERTICAL_ACTIVATION_THRESHOLD, 0, VERTICAL_ACTIVATION_THRESHOLD],
-      [0, 1, 0]
+      [0, 1, 0],
+      'clamp'
     ),
   }));
 
@@ -453,9 +459,10 @@ function GalleryInner<T = ImageSourcePropType>(
       },
     ],
     opacity: interpolate(
-      layoutTranslateY.value,
+      translateY.value + layoutTranslateY.value,
       [-VERTICAL_ACTIVATION_THRESHOLD, 0, VERTICAL_ACTIVATION_THRESHOLD],
-      [0, 1, 0]
+      [0, 1, 0],
+      'clamp'
     ),
   }));
 
@@ -519,11 +526,11 @@ function GalleryInner<T = ImageSourcePropType>(
   return (
     <GestureHandlerRootView style={[StyleSheet.absoluteFillObject]}>
       <GalleryAnimatedView
+        style={[StyleSheet.absoluteFillObject, backdropAnimated]}
+      />
+      <GalleryAnimatedView
         style={[styles.galleryContainer, containerStyle, transformAnimated]}
       >
-        <GalleryAnimatedView
-          style={[StyleSheet.absoluteFillObject, backdropAnimated]}
-        />
         <GestureDetector gesture={panDownToCloseGesture}>
           <View style={styles.galleryGestureLayer}>
             <GalleryFlatList

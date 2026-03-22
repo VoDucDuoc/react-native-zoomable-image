@@ -108,6 +108,8 @@ To publish new versions, run the following:
 yarn release
 ```
 
+For a fuller checklist (npm login, tests, GitHub token, first publish), see [docs/PUBLISHING.md](./docs/PUBLISHING.md).
+
 
 ### Scripts
 

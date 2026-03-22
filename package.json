@@ -1,5 +1,5 @@
 {
-  "name": "react-native-zoomable-image",
+  "name": "@duocvo/react-native-zoomable-image",
   "version": "0.1.0",
   "description": "A lightweight and flexible zoom & pan gesture handler for React Native, built with Reanimated and Gesture Handler. Supports pinch, double-tap, and fully customizable content via a headless component API.",
   "main": "./lib/module/index.js",
@@ -43,7 +43,18 @@
   "keywords": [
     "react-native",
     "ios",
-    "android"
+    "android",
+    "image",
+    "viewer",
+    "gesture",
+    "zoom",
+    "zoomable",
+    "pan",
+    "double tap",
+    "pinch to zoom",
+    "image viewer",
+    "react native image viewer",
+    "gallary"
   ],
   "repository": {
     "type": "git",
@@ -56,6 +67,7 @@
   },
   "homepage": "https://github.com/VoDucDuoc/react-native-zoomable-image#readme",
   "publishConfig": {
+    "access": "public",
     "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
@@ -79,13 +91,17 @@
     "react": "19.2.0",
     "react-native": "0.83.2",
     "react-native-builder-bob": "^0.40.13",
+    "react-native-gesture-handler": "2.24.0",
+    "react-native-reanimated": "3.16.7",
     "release-it": "^19.0.4",
     "turbo": "^2.5.6",
     "typescript": "^5.9.2"
   },
   "peerDependencies": {
     "react": "*",
-    "react-native": "*"
+    "react-native": "*",
+    "react-native-gesture-handler": ">=2",
+    "react-native-reanimated": ">=3"
   },
   "workspaces": [
     "example"

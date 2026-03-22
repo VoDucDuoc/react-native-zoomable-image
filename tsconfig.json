@@ -2,7 +2,7 @@
   "compilerOptions": {
     "rootDir": ".",
     "paths": {
-      "react-native-zoomable-image": ["./src/index"]
+      "@duocvo/react-native-zoomable-image": ["./src/index"]
     },
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,

@@ -22,6 +22,15 @@ export const SPRING_CONFIG = {
   overshootClamping: false,
 }
 
+/** Scales pan-release inertia so quick flicks do not overshoot as aggressively (Reanimated `withDecay` default factor is 1). */
+export const PAN_DECAY_VELOCITY_FACTOR = 0.32;
+/** Caps raw pan end velocity (px/s) before scaling — limits aggressive flicks. */
+export const PAN_DECAY_MAX_INPUT_VELOCITY = 1400;
+/** Friction for pan inertia; Reanimated default is 0.998 — lower values stop sooner. */
+export const PAN_DECAY_DECELERATION = 0.991;
+/** Snap-back duration when releasing past pan bounds (rubber band / corner). */
+export const PAN_BOUNDARY_SNAP_DURATION_MS = 180;
+
 export const DIMENSIONS = Dimensions.get('window');
 export const SCREEN_WIDTH = DIMENSIONS.width;
 export const SCREEN_HEIGHT = DIMENSIONS.height;

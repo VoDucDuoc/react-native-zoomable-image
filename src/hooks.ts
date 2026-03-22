@@ -29,6 +29,10 @@ import {
   RUBBER_BAND_FACTOR,
   SPRING_CONFIG,
   MIN_SCALE,
+  PAN_BOUNDARY_SNAP_DURATION_MS,
+  PAN_DECAY_DECELERATION,
+  PAN_DECAY_MAX_INPUT_VELOCITY,
+  PAN_DECAY_VELOCITY_FACTOR,
   SCREEN_WIDTH,
 } from './constants';
 import { clamp, type Dimensions } from './utils';
@@ -58,8 +62,6 @@ export const useZoomGesture = (
   const focalY = useSharedValue(0);
   const isPinching = useSharedValue(false);
   const isPanning = useSharedValue(false);
-  const reachedLeftEdge = useSharedValue(false);
-  const reachedRightEdge = useSharedValue(false);
   const isZoomedIn = useSharedValue(false);
 
   const containerDimensions = useSharedValue<Dimensions>({
@@ -330,17 +332,6 @@ export const useZoomGesture = (
 
   const panGesture = Gesture.Pan()
     .manualActivation(true)
-    .onTouchesDown((e: GestureTouchEvent) => {
-      'worklet';
-      if (e.numberOfTouches >= 1) {
-        const bounds = getTranslateBounds(scale.value);
-        const edgeThreshold = 2;
-
-        reachedLeftEdge.value = translateX.value >= bounds.maxX - edgeThreshold;
-        reachedRightEdge.value =
-          translateX.value <= -bounds.maxX + edgeThreshold;
-      }
-    })
     .onTouchesMove((e: GestureTouchEvent, state: GestureStateManagerType) => {
       'worklet';
       if (e.state === State.ACTIVE) return;
@@ -367,15 +358,13 @@ export const useZoomGesture = (
     .onUpdate((event: GestureUpdateEvent<PanGestureHandlerEventPayload>) => {
       'worklet';
 
-      let newTx = lastTranslateX.value + event.translationX;
+      const newTx = lastTranslateX.value + event.translationX;
       const newTy = lastTranslateY.value + event.translationY;
 
       const rubber = applyRubberBandTranslation(newTx, newTy, scale.value);
-      newTx = rubber.x;
 
-      const rubberY = applyRubberBandTranslation(newTx, newTy, scale.value);
-      translateX.value = newTx;
-      translateY.value = rubberY.y;
+      translateX.value = rubber.x;
+      translateY.value = rubber.y;
     })
     .onEnd((event: GestureStateChangeEvent<PanGestureHandlerEventPayload>) => {
       'worklet';
@@ -391,25 +380,41 @@ export const useZoomGesture = (
       const isOutOfBoundsY =
         currentTy < -bounds.maxY || currentTy > bounds.maxY;
 
+      const snapBoundary = {
+        duration: PAN_BOUNDARY_SNAP_DURATION_MS,
+        easing: Easing.out(Easing.cubic),
+      };
+
       if (isOutOfBoundsX || isOutOfBoundsY) {
-        translateX.value = withSpring(
+        translateX.value = withTiming(
           clamp(currentTx, -bounds.maxX, bounds.maxX),
-          SPRING_CONFIG
+          snapBoundary
         );
-        translateY.value = withSpring(
+        translateY.value = withTiming(
           clamp(currentTy, -bounds.maxY, bounds.maxY),
-          SPRING_CONFIG
+          snapBoundary
         );
       } else {
+        const vx =
+          Math.sign(event.velocityX) *
+          Math.min(Math.abs(event.velocityX), PAN_DECAY_MAX_INPUT_VELOCITY);
+        const vy =
+          Math.sign(event.velocityY) *
+          Math.min(Math.abs(event.velocityY), PAN_DECAY_MAX_INPUT_VELOCITY);
+
         translateX.value = withDecay({
-          velocity: event.velocityX,
+          velocity: vx,
+          velocityFactor: PAN_DECAY_VELOCITY_FACTOR,
+          deceleration: PAN_DECAY_DECELERATION,
           clamp: [-bounds.maxX, bounds.maxX],
           rubberBandEffect: true,
           rubberBandFactor: 0.6,
         });
 
         translateY.value = withDecay({
-          velocity: event.velocityY,
+          velocity: vy,
+          velocityFactor: PAN_DECAY_VELOCITY_FACTOR,
+          deceleration: PAN_DECAY_DECELERATION,
           clamp: [-bounds.maxY, bounds.maxY],
           rubberBandEffect: true,
           rubberBandFactor: 0.6,
@@ -535,9 +540,7 @@ export const scaleDimensionsToScreenWidth = (
  * Like `useImageDimensions` for remote URIs; also supports `require()`-style numeric sources
  * via `Image.resolveAssetSource`. Used by the gallery default image component.
  */
-export const useImageDimensions = (
-  source: ImageSourcePropType
-): Dimensions => {
+export const useImageDimensions = (source: ImageSourcePropType): Dimensions => {
   const [dimensions, setDimensions] = useState<Dimensions>({
     width: 0,
     height: 0,

@@ -1,6 +1,6 @@
 {
   "name": "@duocvo/react-native-zoomable-image",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight and flexible zoom & pan gesture handler for React Native, built with Reanimated and Gesture Handler. Supports pinch, double-tap, and fully customizable content via a headless component API.",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",

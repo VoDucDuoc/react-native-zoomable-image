@@ -2,13 +2,9 @@
 
 A lightweight zoom and pan experience for React Native, built with [Reanimated](https://docs.swmansion.com/react-native-reanimated/) and [React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/). It provides a ready-to-use **`Zoomable`** wrapper, a full-screen **`Gallery`** lightbox with horizontal paging, and **`useImageDimensions`** to size remote images before layout.
 
-## Demo
+## 🎬 Demo
 
-<p align="center">
-    <img src="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExemN3N29rOWMzbWNvczNldnVxM2p5aTg0NmFpbjRpcnc4djRnZ3gyZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UU5zPBjZOvp1WK9rgx/giphy.gif" alt="Watch demo" />
-</p>
-
-If the badge is still a placeholder, open [`docs/DEMO_VIDEO.md`](docs/DEMO_VIDEO.md) for how to record, upload, and wire the link.
+![Demo](https://github.com/user-attachments/assets/47d3f70a-ff01-4caf-95ea-89c6ec8cb058)
 
 ## Features
 

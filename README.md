@@ -4,7 +4,7 @@ A lightweight zoom and pan experience for React Native, built with [Reanimated](
 
 ## 🎬 Demo
 
-![Demo](https://github.com/user-attachments/assets/47d3f70a-ff01-4caf-95ea-89c6ec8cb058)
+[![Demo]()](https://github.com/user-attachments/assets/76d44a4b-3ffe-41aa-86d1-aeadf4d6e5d7)
 
 ## Features
 
